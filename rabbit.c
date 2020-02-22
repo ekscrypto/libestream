@@ -14,8 +14,7 @@ print_state(rabbit_state *s)
   uint32_t *v[2] = {s->x, s->c};
   char l[2] = {'X', 'C'};
 
-  int i, j;
-  for(i = 1; i < 16; ++i) {
+  for(int i = 1; i < 16; ++i) {
     fputs((i % 4) ? ", " : ",\n     ", stdout);
     printf("%c%d = 0x%08X", l[i/8], i%8, v[i/8][i%8]);
   }
@@ -26,7 +25,7 @@ static uint32_t
 g(uint32_t u, uint32_t v)
 {
   uint64_t square = (uint64_t)(u+v) * (uint64_t)(u+v);
-  return (square >> 32) ^ square;
+  return (uint32_t)((square >> 32) ^ square);
 }
 
 static void
@@ -47,7 +46,7 @@ algorithm_round(rabbit_state *s)
     {
       /* This ended up being the "best" way to get the carry bit... */
       uint64_t tmp = (uint64_t)c[i] + A[i] + b;
-      c[i] = tmp;
+      c[i] = (uint32_t)tmp;
       b = tmp >> 32;
     }
   s->carry = b;
